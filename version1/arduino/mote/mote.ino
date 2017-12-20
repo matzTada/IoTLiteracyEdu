@@ -53,7 +53,7 @@ void setup() {
   pinMode(BUTTON_PIN, INPUT_PULLUP);
   for (int i = 0; i < 5; i++) pinMode(SWITCH_ARRAY_PIN[i], INPUT_PULLUP);
 
-  myservo.attach(SERVO_PIN, 550, 2000); //attach(pin number(must be PWM pin), MIN pulse width, MAX pulse width)
+  myservo.attach(SERVO_PIN, 1500, 1900); //attach(pin number(must be PWM pin), MIN pulse width, MAX pulse width)
   myservo.write(0);
 
   myxbee.init();

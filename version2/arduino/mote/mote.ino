@@ -4,9 +4,9 @@
 // Author: Tada Matz
 
 //<==== Please change according to an instruction
-String MOTENAME = "hello"; //recommended to be between 1 ~ 10
-int MOTEID = 1; //should be from 1 ~ 20
-uint32_t DEST_ADDR_LSB = 0x415C081C; // LSB of XBee Coordinator Address
+String MOTENAME = "goodnight"; //recommended to be between 1 ~ 10
+int MOTEID = 20; //should be from 1 ~ 20
+uint32_t DEST_ADDR_LSB = 0x40B0A324; // LSB of XBee Coordinator Address
 //====>Please change according to an instruction
 
 #include "XBee.h"
@@ -46,7 +46,7 @@ void setup() {
   digitalWrite(CLICK_LED_PIN, HIGH);
   pinMode(BUTTON_PIN, INPUT_PULLUP);
 
-  myservo.attach(SERVO_PIN); //attach(pin number(must be PWM pin), MIN pulse width, MAX pulse width)
+  myservo.attach(SERVO_PIN, 1500, 1900); //attach(pin number(must be PWM pin), MIN pulse width, MAX pulse width)
   myservo.write(0);
 
   myxbee.init();
