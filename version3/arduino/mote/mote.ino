@@ -10,7 +10,7 @@ int oldR = 0;
 int oldG = 0;
 int oldB = 0;
 
-#define CNT_MAX 2
+#define CNT_MAX 3
 int cntR = 0;
 int cntG = 0;
 int cntB = 0;
