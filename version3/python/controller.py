@@ -3,8 +3,7 @@ import time
 import array
 import sys
 
-LED_HEADER = 'L'
-ID_PACKET_OFFSET = '0'
+import socket
 
 def readSerial(ser): #can process the Escape mode API = 2
     var = ord(ser.read())
@@ -71,6 +70,9 @@ def makeZigBeeTransmitRequestPacket(dst64addrH, dst64addrL, dst16addr, payLoad):
     return sendPacket
 
 if __name__ == "__main__":
+  LED_HEADER = 'L'
+  ID_PACKET_OFFSET = '0'
+
   #<=== Serial port initialization
   print "serial port initialization start"
   # port = '/dev/ttyUSB0' #XBee Explorer via USB that is for raspberry pi
@@ -80,6 +82,14 @@ if __name__ == "__main__":
   time.sleep(2) #wait for establishing stable serial connection
   print "serial port initialization end"
   #===> Serial port initialization
+
+  # #<=== udp server
+  # sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+  # sock.bind(("", 4000))
+  # sock.setblocking(False)
+  # bufsize = 4096
+  # #===> udp server
+
 
   try:
     while True:
@@ -139,15 +149,12 @@ if __name__ == "__main__":
               
               # print "len:", frameLength, "data:", str(bytearray(receiveData)).strip()
               print  "id:", tmp_id, "tmp_red", tmp_red, "tmp_green", tmp_green, "tmp_blue", tmp_blue, "name:", tmp_name.strip()
-      #===> packet receiving
+        #===> packet receiving
 
+ 
       # #<=== broadcast packet sending
       # if not tmp_value == 0: 
       #   print "triger to send broadcast packet!!"
-      #   cur = conn.cursor()
-      #   cur.execute("UPDATE flagtest SET value=%s WHERE flagtest.name=%s", [0, "broadcastflag"])
-      #   conn.commit()
-      #   cur.close()
 
       #   broadcast_packet_str = "" + DOWNLINK_HEADER
       #   if tmp_value == 1: #sending Led packet
@@ -168,4 +175,5 @@ if __name__ == "__main__":
   finally:
     serialPort.close()
     print port + " is closed."
+    sock.close()
     print "finish program"
