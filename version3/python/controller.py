@@ -11,11 +11,8 @@ from psycopg2.extensions import adapt, register_adapter, AsIs
 import datetime
 import random
 
+LED_HEADER = 'L'
 ID_PACKET_OFFSET = '0'
-UPLINK_HEADER = 'U'
-DOWNLINK_HEADER = 'D'
-LED_INSTRUCTION = 'L'
-SERVO_INSTRUCTION = 'S'
 
 def readSerial(ser): #can process the Escape mode API = 2
     var = ord(ser.read())
@@ -82,36 +79,15 @@ def makeZigBeeTransmitRequestPacket(dst64addrH, dst64addrL, dst16addr, payLoad):
     return sendPacket
 
 if __name__ == "__main__":
-  #database intialization <===
-  print "database initialization start"
-  conn = psycopg2.connect(host="localhost", database="iotedu", user="postgres", password="mypgsql")
-  print "database initialization end"
-  #===>database
-  
   #<=== Serial port initialization
   print "serial port initialization start"
   # port = '/dev/ttyUSB0' #XBee Explorer via USB that is for raspberry pi
-  port = 'COM22' #XBee Explorer
+  port = 'COM44' #XBee Explorer
   serialPort = serial.Serial(port, 9600, timeout = 1)
   print port + " is opend"
   time.sleep(2) #wait for establishing stable serial connection
   print "serial port initialization end"
   #===> Serial port initialization
-
-  #<=== initial data printing
-  cur = conn.cursor()
-  cur.execute("SELECT * FROM connectiontest ORDER BY nodeid")
-  result = cur.fetchall()
-  print result
-  if result == []:
-    print "oh... no data"
-  else:
-    print "yeah... we have data"
-    for row in result:
-      print row
-  conn.commit()
-  cur.close()  
-  #===> initial data printing
 
   try:
     while True:
@@ -154,64 +130,48 @@ if __name__ == "__main__":
             for i in range(0,4):
               src64addrL += frameData[i + 8] * pow(256,(3 - i))
               src16addr = frameData[12] * 256 + frameData[13]
-              receiveOptions = frameData[14]
-              receiveData = []
+            receiveOptions = frameData[14]
+            receiveData = ""
             for i in range(15, frameLength + 3):
-              receiveData.append(frameData[i])
-            #print "str(bytearray(receiveData)):", str(bytearray(receiveData))
+              receiveData += chr(frameData[i])
+            # print "str(bytearray(receiveData)):", str(bytearray(receiveData))
 
             payloadType = receiveData[0]
             # print "payloadType: ", str(hex(payloadType)), "chr(payloadType): ", str(chr(payloadType))
-            if payloadType == ord(UPLINK_HEADER) and len(receiveData) > 7:
-              tmp_id = int(receiveData[1] - ord(ID_PACKET_OFFSET))
-              tmp_temperature = float(receiveData[2] - ord(ID_PACKET_OFFSET)) * 100 + float(receiveData[3] - ord(ID_PACKET_OFFSET) ) * 10 + float(receiveData[4] - ord(ID_PACKET_OFFSET)) * 1 + float(receiveData[5] - ord(ID_PACKET_OFFSET)) * 0.1
-              tmp_volume = int(receiveData[6] - ord(ID_PACKET_OFFSET)) * 1000 + int(receiveData[7] - ord(ID_PACKET_OFFSET) ) * 100 + int(receiveData[8] - ord(ID_PACKET_OFFSET)) * 10 + int(receiveData[9] - ord(ID_PACKET_OFFSET)) * 1
-              tmp_name = receiveData[10:len(receiveData)]
-              tmp_name_str = ""
-              for c in tmp_name:
-                tmp_name_str += chr(c)
+            if payloadType == LED_HEADER and len(receiveData) > 11:
+              tmp_id = int(ord(receiveData[1]) - ord(ID_PACKET_OFFSET))
+              tmp_red = int(receiveData[2:5]) 
+              tmp_green = int(receiveData[5:8]) 
+              tmp_blue = int(receiveData[8:11]) 
+              tmp_name = receiveData[11:len(receiveData)]
               
               print "len:", frameLength, "data:", str(bytearray(receiveData)).strip()
-              print  "id:", tmp_id, "temp:", tmp_temperature, "volume:", tmp_volume, "name:", tmp_name_str.strip()
+              print  "id:", tmp_id, "tmp_red", tmp_red, "tmp_green", tmp_green, "tmp_blue", tmp_blue, "name:", tmp_name.strip()
 
-              #update database
-              cur = conn.cursor()
-              cur.execute("UPDATE connectiontest SET temperature=%s, volume=%s, xbeeaddr=%s, name=%s, lastupdate=%s WHERE connectiontest.nodeid=%s", \
-                [tmp_temperature, tmp_volume, src64addrL, tmp_name_str.strip(), datetime.datetime.utcnow(), tmp_id])
-              conn.commit()
-              cur.close()
       #===> packet receiving
 
-      #<=== broadcast packet sending
-      cur = conn.cursor()
-      cur.execute("SELECT * FROM flagtest WHERE name=%s", ["broadcastflag"])
-      fetchedData = cur.fetchone()
-      conn.commit()
-      cur.close()
-      tmp_value = fetchedData[2]
-      tmp_angle = fetchedData[3]
-      tmp_led = fetchedData[4]
-      if not tmp_value == 0: 
-        print "triger to send broadcast packet!!"
-        cur = conn.cursor()
-        cur.execute("UPDATE flagtest SET value=%s WHERE flagtest.name=%s", [0, "broadcastflag"])
-        conn.commit()
-        cur.close()
+      # #<=== broadcast packet sending
+      # if not tmp_value == 0: 
+      #   print "triger to send broadcast packet!!"
+      #   cur = conn.cursor()
+      #   cur.execute("UPDATE flagtest SET value=%s WHERE flagtest.name=%s", [0, "broadcastflag"])
+      #   conn.commit()
+      #   cur.close()
 
-        broadcast_packet_str = "" + DOWNLINK_HEADER
-        if tmp_value == 1: #sending Led packet
-        	broadcast_packet_str += LED_INSTRUCTION
-        	broadcast_packet_str += str(tmp_led)
-        elif tmp_value == 2: #sending Servo packet
-	        broadcast_packet_str += SERVO_INSTRUCTION
-	        broadcast_packet_str += "{0:03d}".format(tmp_angle)
+      #   broadcast_packet_str = "" + DOWNLINK_HEADER
+      #   if tmp_value == 1: #sending Led packet
+      #   	broadcast_packet_str += LED_INSTRUCTION
+      #   	broadcast_packet_str += str(tmp_led)
+      #   elif tmp_value == 2: #sending Servo packet
+	     #    broadcast_packet_str += SERVO_INSTRUCTION
+	     #    broadcast_packet_str += "{0:03d}".format(tmp_angle)
 
-        print broadcast_packet_str
-        temp = makeZigBeeTransmitRequestPacket(0x00000000, 0x0000FFFF, 0xFFFE, broadcast_packet_str)
-        serialPort.write(temp)
-        time.sleep(1)
+      #   print broadcast_packet_str
+      #   temp = makeZigBeeTransmitRequestPacket(0x00000000, 0x0000FFFF, 0xFFFE, broadcast_packet_str)
+      #   serialPort.write(temp)
+      #   time.sleep(1)
 
-      #===> broadcast packet sending
+      # #===> broadcast packet sending
       
 
   finally:
