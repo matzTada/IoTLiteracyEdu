@@ -1,15 +1,7 @@
-#based on 160419TSIBPXMASSControllerBatteryRefineOverlapSaveDataAll
-#To do: handle minus value of Thermister. This program does not stop but value could be crazy
-
 import serial
 import time
 import array
 import sys
-
-import psycopg2
-from psycopg2.extensions import adapt, register_adapter, AsIs
-import datetime
-import random
 
 LED_HEADER = 'L'
 ID_PACKET_OFFSET = '0'
@@ -145,9 +137,8 @@ if __name__ == "__main__":
               tmp_blue = int(receiveData[8:11]) 
               tmp_name = receiveData[11:len(receiveData)]
               
-              print "len:", frameLength, "data:", str(bytearray(receiveData)).strip()
+              # print "len:", frameLength, "data:", str(bytearray(receiveData)).strip()
               print  "id:", tmp_id, "tmp_red", tmp_red, "tmp_green", tmp_green, "tmp_blue", tmp_blue, "name:", tmp_name.strip()
-
       #===> packet receiving
 
       # #<=== broadcast packet sending
