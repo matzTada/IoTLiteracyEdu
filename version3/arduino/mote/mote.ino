@@ -3,14 +3,14 @@
 #define LED_BLUE_PIN 6
 
 #define BUTTON_RED_PIN 10
-#define BUTTON_GREEN_PIN 9
-#define BUTTON_BLUE_PIN 8
+#define BUTTON_GREEN_PIN 11
+#define BUTTON_BLUE_PIN 12
 
 int oldR = 0;
 int oldG = 0;
 int oldB = 0;
 
-#define CNT_MAX 3
+#define CNT_MAX 2
 int cntR = 0;
 int cntG = 0;
 int cntB = 0;
