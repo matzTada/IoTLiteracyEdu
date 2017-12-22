@@ -4,8 +4,8 @@
 // Author: Tada Matz
 
 //<==== Please change according to an instruction
-String MOTENAME = "version3"; //recommended to be between 1 ~ 10
-int MOTEID = 1; //should be from 1 ~ 20
+String MOTENAME = "version3-2"; //recommended to be between 1 ~ 10
+int MOTEID = 2; //should be from 1 ~ 20
 //====>Please change according to an instruction
 
 #define LED_RED_PIN 3
