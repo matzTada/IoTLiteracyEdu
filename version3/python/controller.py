@@ -140,7 +140,7 @@ if __name__ == "__main__":
 
             payloadType = receiveData[0]
             # print "payloadType: ", str(hex(payloadType)), "chr(payloadType): ", str(chr(payloadType))
-            if payloadType == LED_HEADER and len(receiveData) > 11:
+            if payloadType == LED_HEADER and len(receiveData) >= 11:
               tmp_id = int(ord(receiveData[1]) - ord(ID_PACKET_OFFSET))
               tmp_red = int(receiveData[2:5]) 
               tmp_green = int(receiveData[5:8]) 
@@ -154,6 +154,15 @@ if __name__ == "__main__":
       #<=== udp processing
       data, address = sock.recvfrom(bufsize)
       print "udp receive:", data, "address:", address
+
+      if len(data) >= 11 and data[0] == LED_HEADER:
+        #<=== broadcast packet sending
+        print "triger to send broadcast packet!!"
+        temp = makeZigBeeTransmitRequestPacket(0x00000000, 0x0000FFFF, 0xFFFE, data)
+        serialPort.write(temp)
+        time.sleep(1)
+
+        #===> broadcast packet sending
       #===> udp processing
 
     except socket.error:
@@ -165,24 +174,3 @@ if __name__ == "__main__":
       print port + " is closed."
       exit()
  
-      # #<=== broadcast packet sending
-      # if not tmp_value == 0: 
-      #   print "triger to send broadcast packet!!"
-
-      #   broadcast_packet_str = "" + DOWNLINK_HEADER
-      #   if tmp_value == 1: #sending Led packet
-      #   	broadcast_packet_str += LED_INSTRUCTION
-      #   	broadcast_packet_str += str(tmp_led)
-      #   elif tmp_value == 2: #sending Servo packet
-	     #    broadcast_packet_str += SERVO_INSTRUCTION
-	     #    broadcast_packet_str += "{0:03d}".format(tmp_angle)
-
-      #   print broadcast_packet_str
-      #   temp = makeZigBeeTransmitRequestPacket(0x00000000, 0x0000FFFF, 0xFFFE, broadcast_packet_str)
-      #   serialPort.write(temp)
-      #   time.sleep(1)
-
-      # #===> broadcast packet sending
-      
-
-  
