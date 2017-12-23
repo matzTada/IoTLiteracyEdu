@@ -53,18 +53,18 @@ void loop() {
   if (clickDetection(BUTTON_RED_PIN, &oldR)) {
     cntR = cntR + 1;
     if (cntR >= CNT_MAX) cntR = 0;
-    colorR = (int)map(cntR, 0, CNT_MAX, 0, 255);
+    colorR = (int)map(cntR, 0, CNT_MAX - 1, 0, 255);
   }
 
   if (clickDetection(BUTTON_GREEN_PIN, &oldG)) {
     cntG = cntG + 1;
     if (cntG >= CNT_MAX) cntG = 0;
-    colorG = (int)map(cntG, 0, CNT_MAX, 0, 255);
+    colorG = (int)map(cntG, 0, CNT_MAX - 1, 0, 255);
   }
   if (clickDetection(BUTTON_BLUE_PIN, &oldB)) {
     cntB = cntB + 1;
     if (cntB >= CNT_MAX) cntB = 0;
-    colorB = (int)map(cntB, 0, CNT_MAX, 0, 255);
+    colorB = (int)map(cntB, 0, CNT_MAX - 1, 0, 255);
   }
 
   // receiving
@@ -80,7 +80,7 @@ void loop() {
   if (millis() - pastMillis > SEND_INTERVAL) {
     pastMillis = millis();
 
-    char tempsenddata[1 + 1 + 9]; 
+    char tempsenddata[1 + 1 + 9];
     sprintf(tempsenddata, "%c%c%03d%03d%03d",
             LED_HEADER,
             MOTEID + int(ID_PACKET_OFFSET),
