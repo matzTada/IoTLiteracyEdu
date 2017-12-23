@@ -2,9 +2,12 @@ ArrayList<Node> nodes;
 int sortType = 0;
 int positionType = 4;
 
+int NUM_NODE = 20;
+int CELL_X_NUM = 5;
+int CELL_Y_NUM = 4;
+
 void settings() {
   size(1200, 800);
-  //  fullScreen();
 }
 
 void setup() {
@@ -12,18 +15,7 @@ void setup() {
   surface.setTitle("Visualizer");
 
   init_dynamicButton();
-  nodes_init();
-  
-  nodes.add(new Node());
-  nodes.add(new Node());
-  nodes.add(new Node());
-  nodes.add(new Node());
-  nodes.add(new Node());
-  
-
-  //for second window
-  second = new SecondApplet(this);
-  second.img = loadImage("servo_bg.png");
+  nodes_init(NUM_NODE);
 }
 
 void draw() {

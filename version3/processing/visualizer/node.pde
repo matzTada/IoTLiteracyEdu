@@ -5,7 +5,6 @@ class Node {
   int destinationid;
   String name;
   String lastupdate;
-  YSFGraph ysfgraph;
 
   Node() {
     x = 0.0;
@@ -15,7 +14,6 @@ class Node {
     destinationid = 0;
     name = "";
     lastupdate = "";
-    ysfgraph = new YSFGraph();
   }
   Node(int _nodeid, int _xbeeaddr, int _destinationid, String _name, String _lastupdate) {
     nodeid = _nodeid;
@@ -23,7 +21,6 @@ class Node {
     destinationid = _destinationid;
     name = _name;
     lastupdate = _lastupdate;
-    ysfgraph = new YSFGraph();
   }
 
   void updateDrawParameter(float _x, float _y) {
@@ -89,19 +86,14 @@ class Node {
   }
 };
 
-
-
-
-
-void nodes_init() {
+void nodes_init(int _numNode) {
   nodes = new ArrayList<Node>();
+  for (int i = 0; i < _numNode; i++) nodes.add(new Node());
 }
 
 void nodes_display() {
   //===> data fetch from database 
-  int nodesNumber = nodes.size();
   int i = 0;
-  int squareNumber = ceil(sqrt(nodesNumber));
 
   //displaying and sort
   //dynamic position calculation <===
@@ -109,8 +101,8 @@ void nodes_display() {
   case 1: //linear
     for (Node tempNode : nodes) {
       tempNode.updateDrawParameter(
-        (i + 0.5)/ nodesNumber *  width, 
-        (i + 0.5)/ nodesNumber * height);
+        (i + 0.5)/ NUM_NODE *  width, 
+        (i + 0.5)/ NUM_NODE * height);
       i++;
     }
     for (Node tempNode : nodes) {
@@ -118,6 +110,7 @@ void nodes_display() {
     }
     break;
   case 2: //Square Grid
+    int squareNumber = ceil(sqrt(NUM_NODE));
     for (Node tempNode : nodes) {
       tempNode.updateDrawParameter(
         (i % squareNumber + 0.5) / squareNumber *  width, 
@@ -134,8 +127,8 @@ void nodes_display() {
     float circleY = 0.35*height;
     for (Node tempNode : nodes) {
       tempNode.updateDrawParameter(
-        circleX * cos((float) i / nodesNumber *  2 * PI) + 0.5 * width, 
-        circleY * sin((float) i / nodesNumber *  2 * PI) + 0.5 * height);
+        circleX * cos((float) i / NUM_NODE *  2 * PI) + 0.5 * width, 
+        circleY * sin((float) i / NUM_NODE *  2 * PI) + 0.5 * height);
       i++;
     }
     for (Node tempNode : nodes) {
@@ -143,29 +136,15 @@ void nodes_display() {
     }
     break;
   case 4: 
-    int cellWidth = width / squareNumber;
-    int cellHeight = height / squareNumber;
-
-    //graphs by Nakatsuka
-    i = 0;
-    for (Node tempNode : nodes) {
-      tempNode.ysfgraph.drawGraph(
-        (i % squareNumber) *  cellWidth + 0.34 * cellWidth, 
-        (i / squareNumber) * cellHeight + cellHeight, 
-        0.66 * cellWidth, 
-        0.75 * cellHeight, 
-        color(255), 
-        15, 40, 
-        tempNode.lastupdate);
-      i++;
-    }
+    int cellWidth = width / CELL_X_NUM;
+    int cellHeight = height / (CELL_Y_NUM + 1);
 
     //cells by Niwacchi
     i = 0;    
     for (Node tempNode : nodes) {
       tempNode.drawPanel( 
-        (i % squareNumber) * cellWidth, 
-        (i/ squareNumber) * cellHeight + cellHeight, 
+        (i % CELL_X_NUM) * cellWidth, 
+        (i / (CELL_Y_NUM + 1) + 1) * cellHeight, 
         cellWidth, 
         cellHeight);
       i++;

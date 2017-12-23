@@ -12,6 +12,10 @@ Programs are based on XMASS projects by TadaMatz.
 * Processing
 	- Visualizer
 
+## To do
+
+* webブラウザでビジュアライザを見れるようにする
+
 ## 勉強の手順
 
 1. Arduinoのノードを作り、スタンドアローンで試す
