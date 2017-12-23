@@ -6,6 +6,15 @@ int NUM_NODE = 20;
 int CELL_X_NUM = 5;
 int CELL_Y_NUM = 4;
 
+// import UDP library
+char LED_HEADER = 'L';
+char ID_PACKET_OFFSET = '0';
+import hypermedia.net.*;
+UDP udp;  // define the UDP object
+int SRC_PORT = 4001;
+String DST_HOST = "localhost";
+int DST_PORT = 4000;
+
 void settings() {
   size(1200, 800);
 }
@@ -16,6 +25,9 @@ void setup() {
 
   init_dynamicButton();
   nodes_init(NUM_NODE);
+
+  udp = new UDP( this, SRC_PORT);
+  udp.listen( true );
 }
 
 void draw() {
@@ -32,10 +44,10 @@ void draw() {
 
   loop_dynamicButton();
 
-  //loop time and framerate drawing <===
-  int interval = millis() - pastTime;
-  println("one loop by millis() interval: " + interval + "ms frameRate: " + frameRate);
-  //===> loop time and framerate drawing
+  ////loop time and framerate drawing <===
+  //int interval = millis() - pastTime;
+  //println("one loop by millis() interval: " + interval + "ms frameRate: " + frameRate);
+  ////===> loop time and framerate drawing
 }
 
 void keyPressed() {
@@ -58,4 +70,20 @@ void keyPressed() {
 
 void mousePressed() {
   mouseClicked_dynamicButton();
+}
+
+// udp connection receive
+void receive( byte[] data, String ip, int port ) {
+  String message = new String( data );
+  println( "receive: \""+message+"\" from "+ip+" on port "+port );
+
+  // assume "LIRRRGGGBBB"
+  if (message.length() >= 11 && message.charAt(0) == LED_HEADER) { 
+    int tmp_id = int(message.charAt(1) - ID_PACKET_OFFSET);
+    int tmp_red = int(message.substring(2, 5));
+    int tmp_green = int(message.substring(5, 8));
+    int tmp_blue = int(message.substring(8, 11));
+
+    println(tmp_id, tmp_red, tmp_green, tmp_blue);
+  }
 }

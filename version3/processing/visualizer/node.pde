@@ -15,13 +15,6 @@ class Node {
     name = "";
     lastupdate = "";
   }
-  Node(int _nodeid, int _xbeeaddr, int _destinationid, String _name, String _lastupdate) {
-    nodeid = _nodeid;
-    xbeeaddr = _xbeeaddr;
-    destinationid = _destinationid;
-    name = _name;
-    lastupdate = _lastupdate;
-  }
 
   void updateDrawParameter(float _x, float _y) {
     x = _x;
