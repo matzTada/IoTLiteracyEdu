@@ -83,16 +83,16 @@ if __name__ == "__main__":
   print "serial port initialization end"
   #===> Serial port initialization
 
-  # #<=== udp server
-  # sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-  # sock.bind(("", 4000))
-  # sock.setblocking(False)
-  # bufsize = 4096
-  # #===> udp server
+  #<=== udp server
+  sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+  sock.bind(("", 4000))
+  sock.setblocking(False)
+  bufsize = 4096
+  #===> udp server
 
 
-  try:
-    while True:
+  while True:
+    try:
       #<=== packet receiving
       if serialPort.inWaiting() > 0: #if something is in serial port
         var = readSerial(serialPort)
@@ -151,6 +151,19 @@ if __name__ == "__main__":
               print  "id:", tmp_id, "tmp_red", tmp_red, "tmp_green", tmp_green, "tmp_blue", tmp_blue, "name:", tmp_name.strip()
         #===> packet receiving
 
+      #<=== udp processing
+      data, address = sock.recvfrom(bufsize)
+      print "udp receive:", data, "address:", address
+      #===> udp processing
+
+    except socket.error:
+      pass
+    except:
+      print "finish program"
+      sock.close()
+      serialPort.close()
+      print port + " is closed."
+      exit()
  
       # #<=== broadcast packet sending
       # if not tmp_value == 0: 
@@ -172,8 +185,4 @@ if __name__ == "__main__":
       # #===> broadcast packet sending
       
 
-  finally:
-    serialPort.close()
-    print port + " is closed."
-    sock.close()
-    print "finish program"
+  
