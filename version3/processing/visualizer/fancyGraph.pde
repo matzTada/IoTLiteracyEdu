@@ -1,6 +1,8 @@
 //By Nakatsuka!!!
 import processing.serial.*;
-import java.util.TimeZone;
+import java.util.*;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 class YSFGraph {
   FloatList list;
@@ -64,4 +66,16 @@ class YSFGraph {
       list.reverse();
     }
   }
+}
+
+//Thankyou Niwa-cchi!!!
+
+color selectColorBasedOnTemperature(float temp) {
+  color c;
+  if (temp < 25) c = color(0, constrain((temp+25)*10, 0, 255), 255, 250);
+  else if (temp < 27) c = color(0, 255, constrain(255-temp*10, 0, 255), 250);
+  else if (temp < 30) c = color(constrain((temp-27)*10, 0, 255), 255, 0, 250);
+  else if (temp < 35) c = color(255, constrain(255-(temp-30)*10, 0, 255), 0, 250);
+  else c = color(255, 0, 0, 150);
+  return c;
 }

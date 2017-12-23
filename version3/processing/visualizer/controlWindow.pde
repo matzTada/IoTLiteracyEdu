@@ -140,18 +140,15 @@ class SecondApplet extends PApplet {
         int tempAngle = (int)temp;
         //***** Broadcast Data *****
         println("instruceted angle: " + tempAngle);
-        updateBroadcastFlagOnDB(2, tempAngle, 0);
         //api_send(tx);
       }
     }
 
     if (overRect(ONrectX, ONrectY, ONrectSize*3, ONrectSize) ) {
       LEDstate = 1;
-      updateBroadcastFlagOnDB(1, 0, 1);
     }
     if (overRect(OFFrectX, OFFrectY, OFFrectSize*3, OFFrectSize)) {
       LEDstate = 0;
-      updateBroadcastFlagOnDB(1, 0, 0);
     }
   }
 

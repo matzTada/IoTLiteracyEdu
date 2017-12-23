@@ -1,15 +1,10 @@
-ArrayList<Node> nodes;
-
 class Node {
   float x, y;
   int nodeid;
   int xbeeaddr;
-  float temperature;
   int destinationid;
-  int votedcounter;
   String name;
   String lastupdate;
-  int volume;
   YSFGraph ysfgraph;
 
   Node() {
@@ -17,45 +12,23 @@ class Node {
     y = 0.0;
     nodeid = 0;
     xbeeaddr = 0;
-    temperature = 0.0;
     destinationid = 0;
-    votedcounter = 0;
     name = "";
     lastupdate = "";
-    volume = 0;
     ysfgraph = new YSFGraph();
   }
-  Node(int _nodeid, int _xbeeaddr, float _temperature, int _destinationid, int _votedcounter, String _name, String _lastupdate, int _volume) {
+  Node(int _nodeid, int _xbeeaddr, int _destinationid, String _name, String _lastupdate) {
     nodeid = _nodeid;
     xbeeaddr = _xbeeaddr;
-    temperature = _temperature;
     destinationid = _destinationid;
-    votedcounter = _votedcounter;
     name = _name;
     lastupdate = _lastupdate;
-    volume = _volume;
     ysfgraph = new YSFGraph();
   }
 
   void updateDrawParameter(float _x, float _y) {
     x = _x;
     y = _y;
-  }
-
-  void updateDataFromDB(int _nodeid, int _xbeeaddr, float _temperature, int _destinationid, int _votedcounter, String _name, String _lastupdate, int _volume) {
-    nodeid = _nodeid;
-    xbeeaddr = _xbeeaddr;
-    temperature = _temperature;
-    destinationid = _destinationid;
-    votedcounter = _votedcounter;
-    name = _name;
-    volume = _volume;
-    try {
-      if (!_lastupdate.equals(lastupdate)) ysfgraph.addValue(temperature); //add new value to graph only when new data is receved
-    }
-    catch(NullPointerException e) {
-    } 
-    lastupdate = _lastupdate;
   }
 
   void drawNode() {
@@ -68,16 +41,57 @@ class Node {
     textAlign(CENTER);
     text("nodeid:" + nodeid + "\n"
       + "64L:" + hex(xbeeaddr, 8) + "\n"
-      + "temp:" + temperature + "\n"
       + "d_id:" + destinationid + "\n"
-      + "v_cnt:" + votedcounter + "\n"
       + "name:" + name.trim() + "\n"
       + "lastupdate:" + lastupdate + "\n"
       , x, y);
     noFill();
     noStroke();
   }
+
+
+  void drawPanel(float x, float y, float w, float h) {
+    textAlign(LEFT);
+    stroke(79, 0, 178);
+    if (w/40<h/40)  strokeWeight(w/40);
+    else strokeWeight(h/40);
+    strokeJoin(ROUND);
+    int tsize=0;
+    if (w/15<=h/15) { 
+      tsize=int(w)/10;
+    } else { 
+      tsize=int(h)/10;
+    }
+    PFont myFont = loadFont("BerlinSansFB-Reg-48.vlw");
+    textFont(myFont);
+
+    //color selection of background
+    //fill(selectColorBasedOnTemperature(Temp));
+    fill(0, 0, 0, 0);
+    rect(x, y, w, h);
+
+    //left window
+    fill(255, 255, 200);
+    rect(x, y+0*h/4, w/3, 3 * h/4);
+    rect(x, y+0*h/4, w/3, h/4);
+    fill(0, 0, 0);
+    textSize(tsize);
+    text("ID", x+w/40, y+h/10+0*h/4);
+    textSize(tsize * 2.0);
+    text(nodeid, x+w/8, y+h/5+0*h/4);
+
+    //name window
+    fill(255, 129, 25);
+    rect(x, y+h*3/4, w, h/4);
+    fill(255, 255, 255);
+    textSize(tsize*2);
+    text(name, x+w/20, y+h/5+h*3/4);
+  }
 };
+
+
+
+
 
 void nodes_init() {
   nodes = new ArrayList<Node>();
@@ -149,7 +163,7 @@ void nodes_display() {
     //cells by Niwacchi
     i = 0;    
     for (Node tempNode : nodes) {
-      displayCell(tempNode.nodeid, tempNode.temperature, tempNode.volume, tempNode.name, 
+      tempNode.drawPanel( 
         (i % squareNumber) * cellWidth, 
         (i/ squareNumber) * cellHeight + cellHeight, 
         cellWidth, 

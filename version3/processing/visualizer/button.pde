@@ -58,15 +58,15 @@ class DynamicButton {
 
 void init_dynamicButton() {
   dynamicButtons.add(new DynamicButton("button_space", "broad\ncast", 
-  color(255, 20), color(191, 20), color(191, 20), 0, 0, 0.5, 0.5));
+    color(255, 20), color(191, 20), color(191, 20), 0, 0, 0.5, 0.5));
   dynamicButtons.add(new DynamicButton("button_27", "exit", 
-  color(255, 20), color(191, 20), color(191, 20), 0.5, 0, 0.5, 0.25));
+    color(255, 20), color(191, 20), color(191, 20), 0.5, 0, 0.5, 0.25));
   dynamicButtons.add(new DynamicButton("button_R", "refresh", 
-  color(127, 20), color(191, 20), color(191, 20), 0.5, 0.25, 0.5, 0.25));
+    color(127, 20), color(191, 20), color(191, 20), 0.5, 0.25, 0.5, 0.25));
   dynamicButtons.add(new DynamicButton("button_p", "position", 
-  color(127, 20), color(191, 20), color(191, 20), 0, 0.5, 0.5, 0.5));
+    color(127, 20), color(191, 20), color(191, 20), 0, 0.5, 0.5, 0.5));
   dynamicButtons.add(new DynamicButton("button_s", "sort", 
-  color(255, 20), color(191, 20), color(191, 20), 0.5, 0.5, 0.5, 0.5));
+    color(255, 20), color(191, 20), color(191, 20), 0.5, 0.5, 0.5, 0.5));
 }
 
 void loop_dynamicButton() {
@@ -80,9 +80,9 @@ void mouseClicked_dynamicButton() {
   for (DynamicButton tmpButton : dynamicButtons) {
     if (tmpButton.check(mouseX, mouseY)) {
       if (tmpButton.name == "button_space") {
-        updateBroadcastFlagOnDB(1, 0, 0);
+        ;
       } else if (tmpButton.name == "button_R") { 
-        refreshDB("connectiontest");
+        ;
       } else if (tmpButton.name == "button_27") {
         exit();
       } else if (tmpButton.name == "button_p") {
@@ -95,25 +95,3 @@ void mouseClicked_dynamicButton() {
     }
   }
 }
-
-//
-//void mouseClicked() {
-//  mouseClicked_dynamicButton();
-//}
-//
-//void setup() {
-//  //size(1200, 800);
-//  //size(800, 600);
-//  size(320, 240);
-//  frame.setResizable(true);
-//  //  surface.setResizable(true);
-//  init_dynamicButton();
-//}
-//
-//void draw() {
-//  background(0);
-//  fill(255, 0, 0);
-//  ellipse(width/2, height/2, width, height);
-//
-//  loop_dynamicButton();
-//}
