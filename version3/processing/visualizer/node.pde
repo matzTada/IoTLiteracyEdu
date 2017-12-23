@@ -1,17 +1,23 @@
 class Node {
   float x, y;
-  int nodeid;
   int xbeeaddr;
   int destinationid;
+  int nodeid;
+  int red;
+  int green;
+  int blue;
   String name;
   String lastupdate;
 
-  Node() {
+  Node(int _nodeid) {
+    nodeid = _nodeid;
     x = 0.0;
     y = 0.0;
-    nodeid = 0;
     xbeeaddr = 0;
     destinationid = 0;
+    red = 0;
+    green = 0;
+    blue = 0;    
     name = "";
     lastupdate = "";
   }
@@ -19,6 +25,13 @@ class Node {
   void updateDrawParameter(float _x, float _y) {
     x = _x;
     y = _y;
+  }
+
+  void updateValue(int _red, int _green, int _blue, String _name) {
+    red = _red;
+    green = _green;
+    blue = _blue;
+    name = _name;
   }
 
   void drawNode() {
@@ -34,6 +47,7 @@ class Node {
       + "d_id:" + destinationid + "\n"
       + "name:" + name.trim() + "\n"
       + "lastupdate:" + lastupdate + "\n"
+      + String.format("(%3d,%3d,%3d)", red, green, blue) + "\n"
       , x, y);
     noFill();
     noStroke();
@@ -76,12 +90,16 @@ class Node {
     fill(255, 255, 255);
     textSize(tsize*2);
     text(name, x+w/20, y+h/5+h*3/4);
+    
+    //right window
+    fill(red, green, blue);
+    rect(x + 1 * w/3, y + 0 * h/4, 2 * w/3, 3 * h/4);
   }
 };
 
 void nodes_init(int _numNode) {
   nodes = new ArrayList<Node>();
-  for (int i = 0; i < _numNode; i++) nodes.add(new Node());
+  for (int i = 1; i < _numNode + 1; i++) nodes.add(new Node(i));
 }
 
 void nodes_display() {

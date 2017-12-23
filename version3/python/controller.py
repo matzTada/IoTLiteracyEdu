@@ -73,6 +73,10 @@ if __name__ == "__main__":
   LED_HEADER = 'L'
   ID_PACKET_OFFSET = '0'
 
+  SRC_PORT = 4000
+  DST_HOST = "localhost"
+  DST_PORT = 4001
+
   #<=== Serial port initialization
   print "serial port initialization start"
   # port = '/dev/ttyUSB0' #XBee Explorer via USB that is for raspberry pi
@@ -85,7 +89,7 @@ if __name__ == "__main__":
 
   #<=== udp server
   sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-  sock.bind(("", 4000))
+  sock.bind(("", SRC_PORT))
   sock.setblocking(False)
   bufsize = 4096
   #===> udp server
@@ -149,6 +153,7 @@ if __name__ == "__main__":
               
               # print "len:", frameLength, "data:", str(bytearray(receiveData)).strip()
               print  "id:", tmp_id, "tmp_red", tmp_red, "tmp_green", tmp_green, "tmp_blue", tmp_blue, "name:", tmp_name.strip()
+              sock.sendto(receiveData, (DST_HOST, DST_PORT))
         #===> packet receiving
 
       #<=== udp processing

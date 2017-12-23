@@ -72,6 +72,11 @@ void mousePressed() {
   mouseClicked_dynamicButton();
 }
 
+void sendUdp(String _data, String _ip, int _port) {
+  _data = _data+";\n"; //     // formats the message for Pd
+  udp.send( _data, _ip, _port );
+}
+
 // udp connection receive
 void receive( byte[] data, String ip, int port ) {
   String message = new String( data );
@@ -83,7 +88,14 @@ void receive( byte[] data, String ip, int port ) {
     int tmp_red = int(message.substring(2, 5));
     int tmp_green = int(message.substring(5, 8));
     int tmp_blue = int(message.substring(8, 11));
+    String tmp_name = message.substring(11, message.length());
 
     println(tmp_id, tmp_red, tmp_green, tmp_blue);
+
+    for (Node tempNode : nodes) {
+      if (tempNode.nodeid == tmp_id) {
+        tempNode.updateValue(tmp_red, tmp_green, tmp_blue, tmp_name);
+      }
+    }
   }
 }
