@@ -14,7 +14,11 @@ Programs are based on XMASS projects by TadaMatz.
 
 ## To do
 
+* データ受けの制限時間を設ける
+	- それか，スクショをとれるようにしとくか
+* 集計等々行う
 * webブラウザでビジュアライザを見れるようにする
+* version3だけrepository分離？
 
 ## 勉強の手順
 
