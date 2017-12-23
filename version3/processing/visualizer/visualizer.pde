@@ -16,7 +16,8 @@ String DST_HOST = "localhost";
 int DST_PORT = 4000;
 
 void settings() {
-  size(1200, 800);
+  //size(1200, 800);
+  fullScreen();
 }
 
 void setup() {
